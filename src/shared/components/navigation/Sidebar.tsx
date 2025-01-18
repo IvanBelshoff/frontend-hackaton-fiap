@@ -25,11 +25,18 @@ export const Sidebar = () => {
             href: '/',
             hrefVariantes: ['/'],
             icon: <MdHome className={`${currentPath === '/' ? 'text-white' : 'text-black'}`} size={22} />
-        }, {
-            name: 'Vercel tutorial',
-            href: '/vercel',
-            hrefVariantes: ['/vercel'],
-            icon: <AiFillOpenAI className={`${currentPath === '/vercel' ? 'text-white' : 'text-black'}`} size={22} />
+        },
+        {
+            name: 'Openai tutorial',
+            href: '/openai',
+            hrefVariantes: ['/openai'],
+            icon: <AiFillOpenAI className={`${currentPath === '/openai' ? 'text-white' : 'text-black'}`} size={22} />
+        },
+        {
+            name: 'Openai tutorial2',
+            href: '/openai2',
+            hrefVariantes: ['/openai2'],
+            icon: <AiFillOpenAI className={`${currentPath === '/openai2' ? 'text-white' : 'text-black'}`} size={22} />
         }
     ];
 
