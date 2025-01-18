@@ -5,6 +5,7 @@ import { MdHome, MdAccountCircle } from 'react-icons/md';
 import { useDrawerContext } from '@/shared/contexts/DrawerContext';
 import { Separator } from '@/components/ui/separator';
 import { JSX } from 'react';
+import { AiFillOpenAI } from "react-icons/ai";
 
 interface IMenuItem {
     name: string;
@@ -24,6 +25,11 @@ export const Sidebar = () => {
             href: '/',
             hrefVariantes: ['/'],
             icon: <MdHome className={`${currentPath === '/' ? 'text-white' : 'text-black'}`} size={22} />
+        }, {
+            name: 'Vercel tutorial',
+            href: '/vercel',
+            hrefVariantes: ['/vercel'],
+            icon: <AiFillOpenAI className={`${currentPath === '/vercel' ? 'text-white' : 'text-black'}`} size={22} />
         }
     ];
 
