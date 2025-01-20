@@ -5,7 +5,7 @@ import { MdHome, MdAccountCircle } from 'react-icons/md';
 import { useDrawerContext } from '@/shared/contexts/DrawerContext';
 import { Separator } from '@/components/ui/separator';
 import { JSX } from 'react';
-import { AiFillOpenAI } from "react-icons/ai";
+import { TbMessageChatbot } from "react-icons/tb";
 
 interface IMenuItem {
     name: string;
@@ -27,16 +27,10 @@ export const Sidebar = () => {
             icon: <MdHome className={`${currentPath === '/' ? 'text-white' : 'text-black'}`} size={22} />
         },
         {
-            name: 'Openai tutorial',
-            href: '/openai',
-            hrefVariantes: ['/openai'],
-            icon: <AiFillOpenAI className={`${currentPath === '/openai' ? 'text-white' : 'text-black'}`} size={22} />
-        },
-        {
-            name: 'Openai tutorial2',
-            href: '/openai2',
-            hrefVariantes: ['/openai2'],
-            icon: <AiFillOpenAI className={`${currentPath === '/openai2' ? 'text-white' : 'text-black'}`} size={22} />
+            name: 'Chat Ia',
+            href: '/chat',
+            hrefVariantes: ['/chat'],
+            icon: <TbMessageChatbot className={`${currentPath === '/chat' ? 'text-white' : 'text-black'}`} size={22} />
         }
     ];
 

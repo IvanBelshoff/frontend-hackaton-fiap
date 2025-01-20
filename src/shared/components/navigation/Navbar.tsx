@@ -34,7 +34,7 @@ export const Navbar = () => {
                 <div className='flex flex-1 items-center py-2 px-6 md:justify-center bg-primary'>
 
                     <div className="ml-8">
-                        <h1 className={'text-3xl text-white'}>Gestão Escolar</h1>
+                        <h1 className={'text-3xl text-white'}>AulaPronta IA</h1>
                     </div>
 
                     <div className='flex-1' />

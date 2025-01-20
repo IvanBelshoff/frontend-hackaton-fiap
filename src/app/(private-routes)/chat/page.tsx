@@ -13,29 +13,11 @@ export default function Chat() {
     });
 
     /*
-    
-     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
-                    {messages.map(m => (
-                        <div key={m.id} className="whitespace-pre-wrap">
-                            {m.role === 'user' ? 'User: ' : 'AI: '}
-                            {m.toolInvocations ? (
-                                <pre>{JSON.stringify(m.toolInvocations, null, 2)}</pre>
-                            ) : (
-                                <p>{m.content}</p>
-                            )}
-                        </div>
-                    ))}
-
-                    <form onSubmit={handleSubmit}>
-                        <input
-                            className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
-                            value={input}
-                            placeholder="Dizer algo..."
-                            onChange={handleInputChange}
-                        />
-                    </form>
-                </div>*/
-
+    Visulizar as ferramentas invocadas
+    {m.toolInvocations && (
+             <pre>{JSON.stringify(m.toolInvocations, null, 2)}</pre>
+    )}
+    */
     return (
         <main className='flex flex-col'>
             <div className='flex gap-2 h-[calc(100vh-61px)]'>
@@ -60,10 +42,11 @@ export default function Chat() {
                                             <AvatarImage src="/ia/IA.png" />
                                         </Avatar>
                                     )}
-                                    {m.toolInvocations ? (
-                                        <pre>{JSON.stringify(m.toolInvocations, null, 2)}</pre>
-                                    ) : (
-                                        <p>{m.content}</p>
+                                    {m.content && (
+                                        <div className='leading-relaxed'>
+                                            <span className='block font-bold text-slate-700'>{m.role === 'user' ? 'Eu' : 'ChatBot'}</span>
+                                            <p>{m.content}</p>
+                                        </div>
                                     )}
                                 </div>
                             ))}
