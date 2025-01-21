@@ -1,4 +1,4 @@
-import { streamText } from 'ai';
+import { smoothStream, streamText } from 'ai';
 import { cohere } from '@ai-sdk/cohere';
 
 export async function POST(req: Request) {
@@ -15,6 +15,7 @@ export async function POST(req: Request) {
             model: model,
             messages: messages,
             system: system,
+            experimental_transform: smoothStream(),
             /*
             tools: {
                 weather: tool({
