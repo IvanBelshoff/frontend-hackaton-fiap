@@ -42,7 +42,7 @@ export const Navbar = () => {
                 </div>
 
             </nav >
-            <div className='h-14 sm:h-[61px]' />
+            <div className='h-14 sm:h-[52px]' />
         </div>
 
     );

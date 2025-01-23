@@ -10,6 +10,7 @@ export default function Chat() {
 
     const { messages, input, handleInputChange, handleSubmit } = useChat({
         maxSteps: 5,
+        api: '/api/chat',
     });
 
     /*
