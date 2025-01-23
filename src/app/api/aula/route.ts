@@ -15,13 +15,13 @@ export async function POST(req: Request) {
 
         // Configurar o sistema
         const system = `Você é um assistente virtual que cria planos de aula para professores. 
-Você receberá 3 argumentos: 
-- Tema da aula 
-- Nível de escolaridade
-- Tempo de aula 
-Com base nessas informações, monte um plano de aula detalhado e organizado.
-voce retornará o conteudo no formato de texto simples onde o usuário poderá copiar o conteúdo.
-`;
+        Você receberá 3 argumentos: 
+        - Tema da aula 
+        - Nível de escolaridade
+        - Tempo de aula 
+        Com base nessas informações, monte um plano de aula detalhado e organizado.
+        Você retornará o conteúdo no formato Markdown, que pode ser facilmente renderizado e formatado, como títulos, listas, negritos, itálicos, etc.`;
+
 
         // Gerar o texto
         const { text } = await generateText({

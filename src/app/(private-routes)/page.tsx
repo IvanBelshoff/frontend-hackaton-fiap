@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { HiOutlineChevronDoubleRight } from "react-icons/hi";
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-
+import ReactMarkdown from 'react-markdown';
 
 export default function PageHome() {
 
@@ -116,7 +116,7 @@ export default function PageHome() {
                     {generation ? (
                         <div className="flex flex-col w-full h-full border rounded-lg border-primary p-4 gap-4 overflow-y-auto">
                             <h1>Plano de Aula Gerado</h1>
-                            <p>{generation}</p>
+                            <ReactMarkdown>{generation}</ReactMarkdown>
                         </div>
                     ) : (
                         <div className="flex flex-col w-full h-full border rounded-lg border-primary p-4 gap-4">
