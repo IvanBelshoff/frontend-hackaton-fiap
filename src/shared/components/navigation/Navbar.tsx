@@ -1,11 +1,35 @@
 'use client';
 import { useDrawerContext } from "@/shared/contexts/DrawerContext";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import { MdMenu, MdOutlineArrowBackIos } from "react-icons/md";
+import { MenuCount } from "../menus/MenuCount";
 
-export const Navbar = () => {
+interface IFoto {
+    nome: string;
+    originalname: string;
+    width: number;
+    height: number;
+    url: string;
+    tamanho: number;
+}
 
+export const Navbar = ({ foto }: { foto: IFoto }) => {
+    
+    const { data: session } = useSession(); // Obtém a sessão atual
     const { toggleMaximize, isMaximized } = useDrawerContext();
+
+    const router = useRouter();
+
+    async function logout() {
+        await signOut({
+            redirect: false
+        });
+
+        router.replace('/login');
+    }
+
 
     return (
         <div>
@@ -38,6 +62,14 @@ export const Navbar = () => {
                     </div>
 
                     <div className='flex-1' />
+
+                    <MenuCount
+                        aoClicarEmMinhaConta={() => console.log('Minha Conta')}
+                        aoClicarEmSobre={() => console.log('Sobre')}
+                        aoClicarEmSair={logout}
+                        foto={session?.user?.foto || foto}
+                    />
+
 
                 </div>
 

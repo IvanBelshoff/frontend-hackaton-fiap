@@ -3,6 +3,7 @@ import { Nunito } from "next/font/google";
 
 import "./globals.css";
 import { DrawerProvider } from "@/shared/contexts/DrawerContext";
+import NextAuthSessionProvider from "@/providers/sessionProvider";
 
 const nunito = Nunito({ subsets: ["latin"] });
 
@@ -15,9 +16,11 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
     return (
         <html lang="pt-br">
             <body className={nunito.className}>
-                <DrawerProvider>
-                    {children}
-                </DrawerProvider>
+                <NextAuthSessionProvider>
+                    <DrawerProvider>
+                        {children}
+                    </DrawerProvider>
+                </NextAuthSessionProvider>
             </body>
         </html>
     );
