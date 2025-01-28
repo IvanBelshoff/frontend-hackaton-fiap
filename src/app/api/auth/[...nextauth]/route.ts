@@ -15,7 +15,7 @@ const nextAuthOptions: NextAuthOptions = {
                 password: { label: 'password', type: 'password' }
             },
 
-            async authorize(credentials, req) {
+            async authorize(credentials, _req) {
                 try {
                     const login = await Api().post('/entrar', { email: credentials?.email, senha: credentials?.password });
 
@@ -57,6 +57,7 @@ const nextAuthOptions: NextAuthOptions = {
                     accessToken: user.accessToken,
                     id: user.id,
                     typeUser: user.typeUser,
+                    api_key: user.api_key,
                     foto: user.foto
                 };
             }

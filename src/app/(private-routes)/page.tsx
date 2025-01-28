@@ -1,31 +1,65 @@
 "use client";
 
 // imports externos
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { HiOutlineChevronDoubleRight } from "react-icons/hi";
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import ReactMarkdown from 'react-markdown';
+import { Input } from "@/components/ui/input";
+import ReactMarkdown from "react-markdown";
+import { MdClear, MdSave } from "react-icons/md";
+import { Loader2 } from "lucide-react";
 
 export default function PageHome() {
-
     const [isLoading, setIsLoading] = useState(false);
     const [form, setForm] = useState({
-        tema: '',
-        nivel: '',
-        tempo: ''
+        tema: "",
+        nivel: "",
+        tempo: "",
     });
-    const [generation, setGeneration] = useState('');
+    const [generation, setGeneration] = useState("");
+    const [error, setError] = useState<string | null>(null); // Estado para erros
+
+    const generateAula = async () => {
+        setIsLoading(true);
+        setError(null); // Limpa erros ao iniciar uma nova geração
+
+        try {
+            const response = await fetch("/api/aula", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tema: form.tema,
+                    nivel: form.nivel,
+                    tempo: form.tempo,
+                }),
+            });
+
+            if (response.ok) {
+                const json = await response.json();
+                setGeneration(json.text); // Recebe o texto gerado pela API
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Ocorreu um erro ao gerar o plano de aula.");
+            }
+        } catch (err) {
+            setError("Erro na requisição. Tente novamente mais tarde.");
+            console.error("Erro na requisição:", err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <main className="flex flex-col">
-            <div className="relative flex h-[calc(100vh-52px)]">
-                {/* Primeira coluna */}
+            <div
+                data-active={generation == ""}
+                className="relative flex h-[calc(100vh-61px)] data-[active=true]:justify-center data-[active=true]:items-center"
+            >
                 <div className="w-1/2 flex h-full py-4 pl-4 pr-2">
-                    <div className="flex w-full flex-col gap-4 justify-center items-center h-full border rounded-lg border-primary p-4">
-
-                        <h1>Gerador de plano de aula</h1>
+                    <div className="flex w-full flex-col gap-4 justify-center items-center h-full rounded-lg">
+                        <h1 className="font-bold text-2xl">Gerador de plano de aula</h1>
 
                         <div className="flex flex-col gap-4 w-full p-4">
                             {/* Tema de Aula */}
@@ -37,6 +71,8 @@ export default function PageHome() {
                                     type="text"
                                     id="tema"
                                     name="tema"
+                                    value={form.tema}
+                                    disabled={isLoading || generation !== ""}
                                     onChange={(e) => setForm({ ...form, tema: e.target.value })}
                                     placeholder="Digite o tema da aula"
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
@@ -52,6 +88,8 @@ export default function PageHome() {
                                     type="text"
                                     id="nivel"
                                     name="nivel"
+                                    value={form.nivel}
+                                    disabled={isLoading || generation !== ""}
                                     onChange={(e) => setForm({ ...form, nivel: e.target.value })}
                                     placeholder="Ex: Fundamental, Médio"
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
@@ -67,74 +105,61 @@ export default function PageHome() {
                                     type="time"
                                     id="tempo"
                                     name="tempo"
+                                    value={form.tempo}
+                                    disabled={isLoading || generation !== ""}
                                     onChange={(e) => setForm({ ...form, tempo: e.target.value })}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                                 />
                             </div>
-
                         </div>
+
+                        {/* Exibição de erro */}
+                        {error && (
+                            <div className="text-red-600 text-sm mb-2">
+                                {error}
+                            </div>
+                        )}
+
                         <Button
-                            disabled={isLoading}
-                            onClick={async () => {
-                                setIsLoading(true);
-
-                                try {
-                                    const response = await fetch('/api/aula', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify({
-                                            tema: form.tema,
-                                            nivel: form.nivel,
-                                            tempo: form.tempo,
-                                        }),
-                                    });
-
-                                    if (response.ok) {
-                                        const json = await response.json();
-                                        setGeneration(json.text); // Recebe o texto gerado pela API
-                                    } else {
-                                        console.error('Erro ao gerar o plano de aula:', response.statusText);
-                                    }
-                                } catch (error) {
-                                    console.error('Erro na requisição:', error);
-                                } finally {
-                                    setIsLoading(false);
-                                }
-                            }}
+                            disabled={isLoading || generation !== ""}
+                            onClick={generateAula}
                             className="pointer-events-auto"
                         >
-                            {isLoading ? 'Gerando...' : 'Gerar aula'}
+                            {isLoading ? "Gerando..." : "Gerar aula"}
                             <HiOutlineChevronDoubleRight />
                         </Button>
-
                     </div>
                 </div>
 
-                <div className="w-1/2 flex h-full py-4 pl-2 pr-4">
-                    {generation ? (
-                        <div className="flex flex-col w-full h-full border rounded-lg border-primary p-4 gap-4 overflow-y-auto">
-                            <h1>Plano de Aula Gerado</h1>
-                            <ReactMarkdown>{generation}</ReactMarkdown>
+                {/* Exibição do plano de aula gerado */}
+                {generation && !isLoading && (
+                    <div className="w-1/2 flex h-full py-4 pl-2 pr-4">
+                        <div className="flex flex-col w-full h-full gap-4 justify-center items-center">
+                            <h1 className="text-xl font-light">Plano de Aula</h1>
+                            <div style={{ scrollbarWidth: 'none' }} className="flex flex-col w-full h-full border rounded-lg border-primary p-4 gap-4 overflow-y-auto">
+                                <ReactMarkdown>{generation}</ReactMarkdown>
+                            </div>
+                            <div className="flex gap-4">
+                                <Button variant={'secondary'} className="border" onClick={() => { setGeneration(""); setError(null); setForm({ tema: "", nivel: "", tempo: "" }) }}>
+                                    <MdClear />
+                                    Limpar
+                                </Button>
+                                <Button>
+                                    <MdSave />
+                                    Salvar
+                                </Button>
+                            </div>
                         </div>
-                    ) : (
-                        <div className="flex flex-col w-full h-full border rounded-lg border-primary p-4 gap-4">
-                            {/* Skeleton para o título */}
-                            <Skeleton className="h-6 w-1/3" />
+                    </div>
+                )}
 
-                            {/* Skeleton para o texto (linhas longas e curtas) */}
-                            <Skeleton className="h-4 w-full" />
-                            <Skeleton className="h-4 w-4/5" />
-                            <Skeleton className="h-4 w-3/4" />
-                            <Skeleton className="h-4 w-full" />
-                            <Skeleton className="h-4 w-2/3" />
-                        </div>
-                    )}
-
-                </div>
+                {isLoading && (
+                    <div className="w-1/2 flex h-full py-4 pl-2 pr-4 justify-center items-center flex-col gap-4">
+                        <h1 className="text-xl font-light">Gerando plano de aula</h1>
+                        <Loader2 className="animate-spin text-primary" size={100} />
+                    </div>
+                )}
             </div>
-        </main >
-
-    )
+        </main>
+    );
 }

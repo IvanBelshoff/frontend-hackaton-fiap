@@ -1,17 +1,31 @@
 import { generateText } from 'ai';
-import { cohere } from '@ai-sdk/cohere';
+import { getServerSession } from 'next-auth';
+import { nextAuthOptions } from '../auth/[...nextauth]/route';
+import { createCohere } from '@ai-sdk/cohere';
+import { z } from 'zod'; // Importa o Zod para validação
+
+// Define o esquema de validação com Zod
+const requestSchema = z.object({
+    tema: z.string().nonempty("O campo 'tema' é obrigatório."),
+    nivel: z.string().nonempty("O campo 'nível' é obrigatório."),
+    tempo: z.string().nonempty("O campo 'tempo' é obrigatório.")
+});
 
 export async function POST(req: Request) {
     try {
-        // Obter os argumentos do corpo da requisição
-        const { tema, nivel, tempo } = await req.json();
+        const session = await getServerSession(nextAuthOptions);
+        const apiKey = session?.user.api_key;
 
-        console.log("tema", tema);
-        console.log("nivel", nivel);
-        console.log("tempo", tempo);
+        if (!apiKey) {
+            throw new Error("API key is missing in the session.");
+        }
 
-        // Criar o modelo
-        const model = cohere('command-r-plus');
+        // Inicializa o Cohere com a chave da API
+        const cohere = createCohere({ apiKey: apiKey });
+
+        // Parse e valida os argumentos da requisição com Zod
+        const body = await req.json();
+        const { tema, nivel, tempo } = requestSchema.parse(body); // Valida o corpo da requisição
 
         // Configurar o sistema
         const system = `Você é um assistente virtual que cria planos de aula para professores. 
@@ -22,17 +36,30 @@ export async function POST(req: Request) {
         Com base nessas informações, monte um plano de aula detalhado e organizado.
         Você retornará o conteúdo no formato Markdown, que pode ser facilmente renderizado e formatado, como títulos, listas, negritos, itálicos, etc.`;
 
+        // Criar o modelo
+        const model = cohere('command-r-plus');
 
         // Gerar o texto
         const { text } = await generateText({
             model: model,
             system: system,
-            prompt: `Tema: ${tema}\nNível: ${nivel}\nTempo: ${tempo}`,
+            prompt: `Tema: ${tema}\nNível: ${nivel}\nTempo: ${tempo}`
         });
 
-        return Response.json({ text });
+        return new Response(
+            JSON.stringify({ text }),
+            { status: 200, headers: { "Content-Type": "application/json" } }
+        );
 
     } catch (error) {
+        if (error instanceof z.ZodError) {
+            // Erros de validação do Zod
+            return new Response(
+                JSON.stringify({ error: error.errors.map((e) => e.message).join(", ") }),
+                { status: 400, headers: { "Content-Type": "application/json" } }
+            );
+        }
+
         console.error("Error generating text:", error);
 
         return new Response(

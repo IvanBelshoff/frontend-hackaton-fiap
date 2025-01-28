@@ -9,6 +9,7 @@ export interface IDataToken {
     accessToken: string;
     id: number;
     typeUser: TipoUsuario,
+    api_key: string;
     foto: {
         nome: string;
         originalname: string;

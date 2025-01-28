@@ -37,7 +37,7 @@ export const Navbar = ({ foto }: { foto: IFoto }) => {
 
                 <div
                     data-active={isMaximized}
-                    className={`data-[active=true]:w-[239.2px] w-[70.5px] data-[active=true]:bg-white bg-primary flex items-center data-[active=true]:justify-end data-[active=true]:pr-4 justify-center data-[active=true]:border-b `}
+                    className={`data-[active=true]:w-[240.2px] w-[70.5px] data-[active=true]:bg-white bg-primary flex items-center data-[active=true]:justify-end data-[active=true]:pr-4 justify-center data-[active=true]:border-b `}
                 >
                     <button
                         onClick={toggleMaximize}>
@@ -74,7 +74,7 @@ export const Navbar = ({ foto }: { foto: IFoto }) => {
                 </div>
 
             </nav >
-            <div className='h-14 sm:h-[52px]' />
+            <div className='h-14 sm:h-[61px]' />
         </div>
 
     );

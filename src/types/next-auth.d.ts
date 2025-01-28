@@ -1,4 +1,5 @@
-import { IDataToken } from "@/shared/interfaces/InterfacesGlobais";
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+import { IDataToken } from "@/shared/interfaces/interface";
 
 declare module "next-auth" {
     interface Session {
@@ -9,5 +10,5 @@ declare module "next-auth" {
         user?: Session["user"];
     }
 
-    type User = IDataToken
+    interface User extends IDataToken {}
 }
