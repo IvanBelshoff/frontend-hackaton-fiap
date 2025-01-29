@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MdHome, MdAccountCircle } from 'react-icons/md';
+import { MdHome, MdAccountCircle, MdOutlineArticle } from 'react-icons/md';
 import { useDrawerContext } from '@/shared/contexts/DrawerContext';
 import { Separator } from '@/components/ui/separator';
 import { JSX } from 'react';
@@ -25,6 +25,12 @@ export const Sidebar = () => {
             href: '/',
             hrefVariantes: ['/'],
             icon: <MdHome className={`${currentPath === '/' ? 'text-white' : 'text-black'}`} size={22} />
+        },
+        {
+            name: 'Planos de Aulas',
+            href: '/planos',
+            hrefVariantes: ['/planos'],
+            icon: <MdOutlineArticle className={`${currentPath === '/planos' ? 'text-white' : 'text-black'}`} size={22} />
         },
         {
             name: 'Chat Ia',

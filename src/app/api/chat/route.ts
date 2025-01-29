@@ -1,8 +1,19 @@
 import { smoothStream, streamText } from 'ai';
-import { cohere } from '@ai-sdk/cohere';
+import { createCohere } from '@ai-sdk/cohere';
+import { getServerSession } from 'next-auth';
+import { nextAuthOptions } from '../auth/[...nextauth]/route';
 
 export async function POST(req: Request) {
 
+    const session = await getServerSession(nextAuthOptions);
+    const apiKey = session?.user.api_key;
+
+    if (!apiKey) {
+        throw new Error("API key is missing in the session.");
+    }
+
+    // Inicializa o Cohere com a chave da API
+    const cohere = createCohere({ apiKey: apiKey });
     // Get the messages from the request body
     const { messages } = await req.json();
 

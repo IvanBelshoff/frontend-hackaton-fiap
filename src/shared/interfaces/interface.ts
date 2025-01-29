@@ -19,3 +19,20 @@ export interface IDataToken {
         tamanho: number;
     }
 }
+
+
+export interface IResponseErrosGeneric {
+    response?: {
+        data: {
+            errors?: {
+                default?: string
+            }
+        },
+        status?: string
+    }
+}
+
+export interface IResponseError {
+    message: string;
+    code: number | undefined;
+}
