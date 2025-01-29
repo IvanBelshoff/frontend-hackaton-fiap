@@ -225,3 +225,70 @@ export async function createPlanoAction(prevState: any, formData: FormData) {
     revalidatePath('/');
 }
 
+
+export interface IDeletePlanoByIdAction {
+    errors?: {
+        default?: string;
+    },
+    sucess?: {
+        default: string;
+    }
+}
+
+export interface IActionDeletePlanoById {
+    response: {
+        data: {
+            errors?: {
+                default?: string
+            }
+        }
+    }
+}
+
+export async function deletePlanoById(prevState: any, formData: FormData): Promise<IDeletePlanoByIdAction | undefined> {
+
+    try {
+        const id = formData.get('id') as string;
+
+        const res = await Api().delete(`/planos/${id}`);
+
+        if (res.status == 204) {
+
+            const data: IDeletePlanoByIdAction = {
+                sucess: {
+                    default: 'Registro deletado com sucesso.',
+                }
+            };
+
+            return data;
+        }
+
+    } catch (error) {
+
+        if (isAxiosError(error)) {
+
+            const errors = (error as IActionDeletePlanoById).response?.data.errors;
+
+            const response: IDeletePlanoByIdAction = {
+                errors: {
+                    default: errors?.default,
+                }
+            };
+
+            return response;
+
+        } else {
+
+            const response: IDeletePlanoByIdAction = {
+                errors: {
+                    default: 'Erro desconhecido ao deletar o registro.'
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+        }
+    }
+
+    revalidatePath('/planos');
+}

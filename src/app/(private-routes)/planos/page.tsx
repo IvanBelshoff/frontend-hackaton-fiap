@@ -12,12 +12,14 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { format } from 'date-fns';
-import { MdDeleteOutline, MdOutlineOpenInNew } from 'react-icons/md';
+import { MdOutlineOpenInNew } from 'react-icons/md';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import DeletePlano from '@/shared/components/DeletePlano';
 
 export default async function Planos() {
+
     const data = await PlanosService.getAll();
 
     let planos: IPlano[] = [];
@@ -40,13 +42,14 @@ export default async function Planos() {
                         <TableCaption>Lista de Planos de Aula</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[50px]">Ações</TableHead>
+                                <TableHead>Abrir</TableHead>
                                 <TableHead>Tema</TableHead>
                                 <TableHead>Nível</TableHead>
                                 <TableHead>Conteúdo</TableHead>
                                 <TableHead>Duração</TableHead>
                                 <TableHead>Data de Criação</TableHead>
                                 <TableHead>Data de Atualização</TableHead>
+                                <TableHead>Excluir</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -69,9 +72,6 @@ export default async function Planos() {
                                                 <MdOutlineOpenInNew size={18} />
                                             </Button>
                                         </Link>
-                                        <Button variant="ghost" size="icon" className="hover:bg-red-50 hover:text-red-600">
-                                            <MdDeleteOutline size={18} />
-                                        </Button>
                                     </TableCell>
                                     <TableCell className="font-medium">{plano.tema}</TableCell>
                                     <TableCell>{plano.nivel}</TableCell>
@@ -79,6 +79,9 @@ export default async function Planos() {
                                     <TableCell>{plano.duracao}</TableCell>
                                     <TableCell>{format(new Date(plano.data_criacao), 'dd/MM/yyyy')}</TableCell>
                                     <TableCell>{format(new Date(plano.data_atualizacao), 'dd/MM/yyyy')}</TableCell>
+                                    <TableCell>
+                                        <DeletePlano id={plano.id} plano={plano.tema} />
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
