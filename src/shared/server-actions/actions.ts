@@ -4,6 +4,7 @@ import { isAxiosError } from "axios";
 
 import { Api } from "@/app/services/Api";
 import { IDataToken } from "../interfaces/interface";
+import { revalidatePath } from "next/cache";
 
 
 export interface IActionLogin {
@@ -123,5 +124,104 @@ export async function recoverPasswordAction(prevState: any, formData: FormData) 
     }
 
 
+}
+
+
+export interface IActionCreatePlano {
+    response: {
+        data: {
+            errors?: {
+                default?: string
+                body?: {
+                    tema?: string,
+                    nivel?: string,
+                    conteudo?: string
+                    duracao?: string
+                }
+            }
+        }
+    }
+}
+
+
+export interface IcreatePlanoAction {
+    errors?: {
+        default?: string
+        body?: {
+            tema?: string,
+            nivel?: string,
+            conteudo?: string
+            duracao?: string
+        }
+    }
+    success?: {
+        default?: string
+    }
+}
+
+export async function createPlanoAction(prevState: any, formData: FormData) {
+
+    try {
+
+        const tema = formData.get('tema') as string;
+        const nivel = formData.get('nivel') as string;
+        const conteudo = formData.get('conteudo') as string;
+        const duracao = formData.get('duracao') as string;
+
+        const create = await Api().post('/planos',
+            {
+                tema: tema,
+                nivel: nivel,
+                conteudo: conteudo,
+                duracao: duracao
+            }
+        );
+
+        if (create.status == 201) {
+
+            const response: IcreatePlanoAction = {
+                success: {
+                    default: 'Plano criado com sucesso',
+                }
+            };
+
+            return response;
+
+        }
+
+    } catch (error) {
+
+        if (isAxiosError(error)) {
+
+            const errors = (error as IActionCreatePlano).response?.data.errors;
+
+            const response: IcreatePlanoAction = {
+                errors: {
+                    default: errors?.default,
+                    body: {
+                        tema: errors?.body?.tema,
+                        nivel: errors?.body?.nivel,
+                        conteudo: errors?.body?.conteudo,
+                        duracao: errors?.body?.duracao
+                    }
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+
+        } else {
+
+            const response: IcreatePlanoAction = {
+                errors: {
+                    default: 'Erro desconhecido ao criar o plano.'
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+        }
+    }
+    revalidatePath('/');
 }
 

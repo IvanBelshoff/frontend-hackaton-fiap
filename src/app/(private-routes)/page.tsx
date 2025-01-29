@@ -1,13 +1,15 @@
 "use client";
 
 // imports externos
-import React, { useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { HiOutlineChevronDoubleRight } from "react-icons/hi";
 import { Input } from "@/components/ui/input";
 import ReactMarkdown from "react-markdown";
-import { MdClear, MdSave } from "react-icons/md";
+import { MdClear, MdOutlineArticle, MdSave } from "react-icons/md";
 import { Loader2 } from "lucide-react";
+import { createPlanoAction, IcreatePlanoAction } from "@/shared/server-actions/actions";
+import { redirect } from "next/navigation";
+import { Alert } from "@/shared/components/alerts/Alert";
 
 export default function PageHome() {
     const [isLoading, setIsLoading] = useState(false);
@@ -51,8 +53,63 @@ export default function PageHome() {
         }
     };
 
+    const [responseCreatePlano, setResponseCreatePlano] = useState<IcreatePlanoAction | null>(null);
+
+    const [stateCreatePlano, formActionCreatePlano, isPendingCreatePlano] = useActionState(createPlanoAction, null);
+
+    const handleResetForm = () => {
+        setGeneration(""); setError(null); setForm({ tema: "", nivel: "", tempo: "" });
+    }
+
+    useEffect(() => {
+
+        if (stateCreatePlano?.errors) {
+
+            console.log(stateCreatePlano.errors);
+
+            setResponseCreatePlano({
+                errors: {
+                    default: stateCreatePlano.errors.default,
+                    body: {
+                        tema: stateCreatePlano.errors.body?.tema,
+                        nivel: stateCreatePlano.errors.body?.nivel,
+                        conteudo: stateCreatePlano.errors.body?.conteudo,
+                        duracao: stateCreatePlano.errors.body?.duracao
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                setResponseCreatePlano(null);
+            }, 5000);
+        }
+
+        if (stateCreatePlano?.success) {
+
+            setResponseCreatePlano({
+                success: {
+                    default: stateCreatePlano.success.default,
+                }
+            });
+
+            setTimeout(() => {
+                setResponseCreatePlano(null);
+                handleResetForm();
+                redirect('/');
+            }, 5000);
+        }
+
+    }, [stateCreatePlano]);
+
     return (
         <main className="flex flex-col">
+
+            <Alert
+                type={(responseCreatePlano?.errors?.default) ? 'danger' : 'sucess'}
+                message={responseCreatePlano?.errors?.default || responseCreatePlano?.success?.default || ''}
+                view={(responseCreatePlano?.errors?.default || responseCreatePlano?.success?.default) ? true : false}
+            />
+
             <div
                 data-active={generation == ""}
                 className="relative flex h-[calc(100vh-61px)] data-[active=true]:justify-center data-[active=true]:items-center"
@@ -107,7 +164,7 @@ export default function PageHome() {
                                     name="tempo"
                                     value={form.tempo}
                                     disabled={isLoading || generation !== ""}
-                                    onChange={(e) => setForm({ ...form, tempo: e.target.value })}
+                                    onChange={(e) => setForm({ ...form, tempo: `${e.target.value}:00` })}
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                                 />
                             </div>
@@ -126,7 +183,7 @@ export default function PageHome() {
                             className="pointer-events-auto"
                         >
                             {isLoading ? "Gerando..." : "Gerar aula"}
-                            <HiOutlineChevronDoubleRight />
+                            <MdOutlineArticle />
                         </Button>
                     </div>
                 </div>
@@ -139,16 +196,25 @@ export default function PageHome() {
                             <div style={{ scrollbarWidth: 'none' }} className="flex flex-col w-full h-full border rounded-lg border-primary p-4 gap-4 overflow-y-auto">
                                 <ReactMarkdown>{generation}</ReactMarkdown>
                             </div>
-                            <div className="flex gap-4">
-                                <Button variant={'secondary'} className="border" onClick={() => { setGeneration(""); setError(null); setForm({ tema: "", nivel: "", tempo: "" }) }}>
-                                    <MdClear />
-                                    Limpar
-                                </Button>
-                                <Button>
-                                    <MdSave />
-                                    Salvar
-                                </Button>
-                            </div>
+
+                            <form action={formActionCreatePlano}>
+                                <div className="flex gap-4">
+                                    {form.tema && <input type="hidden" name="tema" id="tema" value={form.tema} />}
+                                    {form.nivel && <input type="hidden" name="nivel" id="nivel" value={form.nivel} />}
+                                    {form.tempo && <input type="hidden" name="duracao" id="duracao" value={form.tempo} />}
+                                    {generation && <input type="hidden" name="conteudo" id="conteudo" value={generation} />}
+
+                                    <Button type="button" variant={'secondary'} disabled={isPendingCreatePlano} className="border" onClick={handleResetForm}>
+                                        <MdClear />
+                                        Limpar
+                                    </Button>
+                                    <Button type="submit" disabled={isPendingCreatePlano} >
+                                        <MdSave />
+                                        {isPendingCreatePlano ? 'Salvando...' : 'Salvar'}
+                                    </Button>
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                 )}
