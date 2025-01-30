@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { MdHome, MdAccountCircle, MdOutlineArticle } from 'react-icons/md';
+import { useParams, usePathname } from 'next/navigation';
+import { MdHome, MdAccountCircle, MdOutlineArticle, MdSupervisorAccount } from 'react-icons/md';
 import { useDrawerContext } from '@/shared/contexts/DrawerContext';
 import { Separator } from '@/components/ui/separator';
 import { JSX } from 'react';
@@ -15,7 +15,9 @@ interface IMenuItem {
 }
 
 export const Sidebar = () => {
-
+    
+    const params = useParams();
+    const idUsuario = params.idUsuario;
     const { isMaximized } = useDrawerContext();
     const currentPath = usePathname();
 
@@ -37,6 +39,12 @@ export const Sidebar = () => {
             href: '/chat',
             hrefVariantes: ['/chat'],
             icon: <TbMessageChatbot className={`${currentPath === '/chat' ? 'text-white' : 'text-black'}`} size={22} />
+        },
+        {
+            name: 'Gestão de Professores',
+            href: '/usuarios',
+            hrefVariantes: ['/usuarios', '/usuarios/novo', `/usuarios/${idUsuario}/detalhes`],
+            icon: <MdSupervisorAccount className={`${(currentPath === '/usuarios' || currentPath === '/usuarios/novo' || currentPath === `/usuarios/${idUsuario}/detalhes`) ? 'text-white' : 'text-black'}`} size={22} />
         }
     ];
 

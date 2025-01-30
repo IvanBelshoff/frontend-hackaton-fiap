@@ -562,3 +562,197 @@ export async function resetPasswordById(prevState: any, formData: FormData) {
     }
     revalidatePath('/minha-conta');
 }
+
+
+export interface IDeleteUsuarioByIdAction {
+    errors?: {
+        default?: string;
+    },
+    sucess?: {
+        default: string;
+    }
+}
+
+export interface IActionDeleteUsuarioById {
+    response: {
+        data: {
+            errors?: {
+                default?: string
+            }
+        }
+    }
+}
+
+
+export async function deleteUsuarioById(prevState: any, formData: FormData): Promise<IDeleteUsuarioByIdAction | undefined> {
+
+    try {
+        const id = formData.get('id') as string;
+
+        const res = await Api().delete(`/usuarios/${id}`);
+
+        if (res.status == 204) {
+
+            const data: IDeleteUsuarioByIdAction = {
+                sucess: {
+                    default: 'Registro deletado com sucesso.',
+                }
+            };
+
+            return data;
+        }
+
+    } catch (error) {
+
+        if (isAxiosError(error)) {
+
+            const errors = (error as IActionDeleteUsuarioById).response?.data.errors;
+
+            const response: IDeleteUsuarioByIdAction = {
+                errors: {
+                    default: errors?.default,
+                }
+            };
+
+            return response;
+
+        } else {
+
+            const response: IDeleteUsuarioByIdAction = {
+                errors: {
+                    default: 'Erro desconhecido ao deletar o registro.'
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+        }
+    }
+
+    revalidatePath('/usuarios');
+}
+
+
+
+export interface IActionCreateNewUser {
+    response: {
+        data: {
+            errors?: {
+                default?: string
+                body?: {
+                    nome?: string,
+                    sobrenome?: string,
+                    email?: string,
+                    bloqueado?: string,
+                    api_key?: string,
+                    tipo_usuario?: string,
+                    senha?: string
+                }
+            }
+        }
+    }
+}
+
+
+export interface ICreateNewUserAction {
+    errors?: {
+        default?: string
+        body?: {
+            nome?: string,
+            sobrenome?: string,
+            email?: string,
+            bloqueado?: string,
+            api_key?: string,
+            tipo_usuario?: string,
+            senha?: string
+        }
+    }
+    success?: {
+        default?: string
+    }
+}
+
+export async function newUser(prevState: any, formData: FormData): Promise<ICreateNewUserAction | undefined> {
+
+    try {
+
+        const nome = formData.get('nome') as string;
+        const sobrenome = formData.get('sobrenome') as string;
+        const email = formData.get('email') as string;
+        const api_key = formData.get('api_key') as string;
+        const tipo_usuario = formData.get('tipo_usuario') as string;
+        const foto = formData.get('foto') as File;
+        const senha = formData.get('senha') as string;
+
+        const formDataUsuario = new FormData();
+
+        formDataUsuario.append('nome', nome);
+        formDataUsuario.append('sobrenome', sobrenome);
+        formDataUsuario.append('email', email);
+        formDataUsuario.append('api_key', api_key);
+        formDataUsuario.append('tipo_usuario', tipo_usuario);
+        formDataUsuario.append('senha', senha);
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        (foto && foto.type != 'application/octet-stream') && (
+            formDataUsuario.append('foto', foto)
+        );
+
+        const create = await Api().post('/usuarios', formDataUsuario, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+        );
+
+        if (create.status == 201) {
+
+            const response: ICreateNewUserAction = {
+                success: {
+                    default: 'Usuário criado com sucesso',
+                }
+            };
+
+            return response;
+
+        }
+
+    } catch (error) {
+
+        if (isAxiosError(error)) {
+
+            const errors = (error as IActionCreateNewUser).response?.data.errors;
+
+            const response: ICreateNewUserAction = {
+                errors: {
+                    default: errors?.default,
+                    body: {
+                        nome: errors?.body?.nome,
+                        sobrenome: errors?.body?.sobrenome,
+                        email: errors?.body?.email,
+                        bloqueado: errors?.body?.bloqueado,
+                        api_key: errors?.body?.api_key,
+                        tipo_usuario: errors?.body?.tipo_usuario,
+                        senha: errors?.body?.senha
+                    }
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+
+        } else {
+
+            const response: ICreateNewUserAction = {
+                errors: {
+                    default: 'Erro desconhecido ao criar usuário.'
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+        }
+    }
+
+    revalidatePath('/usuarios');
+}
