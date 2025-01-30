@@ -1,0 +1,5 @@
+/* styles.css */
+.avatar-editor {
+    border-radius: 10px; /* Ajuste conforme necessário */
+    overflow: hidden;
+}

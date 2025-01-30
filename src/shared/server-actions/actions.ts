@@ -3,7 +3,7 @@
 import { isAxiosError } from "axios";
 
 import { Api } from "@/app/services/Api";
-import { IDataToken } from "../interfaces/interface";
+import { IDataToken, IUsuarioDetalhado } from "../interfaces/interface";
 import { revalidatePath } from "next/cache";
 
 
@@ -291,4 +291,274 @@ export async function deletePlanoById(prevState: any, formData: FormData): Promi
     }
 
     revalidatePath('/planos');
+}
+
+export interface IDeleteFotoUsuarioByIdAction {
+    errors?: {
+        default?: string
+    }
+    success?: {
+        default?: string
+    }
+}
+
+export async function deleteFotoUsuarioById(prevState: any, formData: FormData) {
+
+    try {
+
+        const id = formData.get('id') as string;
+
+        const create = await Api().delete(`/usuarios/foto/${parseInt(id)}`);
+
+        if (create.status == 204) {
+
+            const response: IDeleteFotoUsuarioByIdAction = {
+                success: {
+                    default: 'Foto deletada com sucesso',
+                }
+            };
+
+            return response;
+
+        }
+
+    } catch (error) {
+
+        if (isAxiosError(error)) {
+
+            const response: IDeleteFotoUsuarioByIdAction = {
+                errors: {
+                    default: 'Erro ao deletar a foto.'
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+
+        } else {
+
+            const response: IDeleteFotoUsuarioByIdAction = {
+                errors: {
+                    default: 'Erro desconhecido ao deletar a foto'
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+        }
+    }
+    revalidatePath('/minha-conta');
+}
+
+
+export interface IUpdateUsuarioByIdAction {
+    errors?: {
+        default?: string
+        body?: {
+            nome?: string,
+            sobrenome?: string,
+            email?: string,
+            bloqueado?: string,
+            localidade?: string,
+            tipo_usuario?: string,
+            codigo_vendedor?: string,
+            senha?: string
+        }
+    }
+    success?: {
+        default?: string,
+        usuario?: IUsuarioDetalhado
+    }
+}
+
+export interface IActionUpdateUsuarioById {
+    response: {
+        data: {
+            errors?: {
+                default?: string
+                body?: {
+                    nome?: string,
+                    sobrenome?: string,
+                    email?: string,
+                    bloqueado?: string,
+                    localidade?: string,
+                    tipo_usuario?: string,
+                    codigo_vendedor?: string,
+                    senha?: string
+                }
+            }
+        }
+    }
+}
+
+export async function updateUsuarioByIdAction(prevState: any, formData: FormData) {
+
+    try {
+
+        const id = formData.get('id') as string;
+        const nome = formData.get('nome') as string;
+        const sobrenome = formData.get('sobrenome') as string;
+        const email = formData.get('email') as string;
+        const api_key = formData.get('api_key') as string;
+        const tipo_usuario = formData.get('tipo_usuario') as string;
+        const foto = formData.get('foto') as File;
+
+        const formDataUsuario = new FormData();
+
+        formDataUsuario.append('nome', nome);
+        formDataUsuario.append('sobrenome', sobrenome);
+        formDataUsuario.append('email', email);
+        formDataUsuario.append('api_key', api_key);
+        formDataUsuario.append('tipo_usuario', tipo_usuario);
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        (foto && foto.type != 'application/octet-stream') && (
+            formDataUsuario.append('foto', foto)
+        );
+
+        const create = await Api().put(`/usuarios/${id}`, formDataUsuario, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+        );
+
+        if (create.status == 200) {
+
+            const usuario = create.data as IUsuarioDetalhado;
+            
+            const response: IUpdateUsuarioByIdAction = {
+                success: {
+                    default: 'Usuário atualzado com sucesso',
+                    usuario: usuario
+                }
+            };
+
+            return response;
+
+        }
+
+    } catch (error) {
+
+        if (isAxiosError(error)) {
+
+            const errors = (error as IActionUpdateUsuarioById).response?.data.errors;
+
+            const response: IUpdateUsuarioByIdAction = {
+                errors: {
+                    default: errors?.default,
+                    body: {
+                        nome: errors?.body?.nome,
+                        sobrenome: errors?.body?.sobrenome,
+                        email: errors?.body?.email,
+                        bloqueado: errors?.body?.bloqueado,
+                        localidade: errors?.body?.localidade,
+                        tipo_usuario: errors?.body?.tipo_usuario,
+                        codigo_vendedor: errors?.body?.codigo_vendedor,
+                        senha: errors?.body?.senha
+                    }
+                }
+            };
+
+            return response;
+
+        } else {
+
+            const response: IUpdateUsuarioByIdAction = {
+                errors: {
+                    default: 'Erro desconhecido ao atualizar o usuário.'
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+        }
+    }
+
+    revalidatePath('/minha-conta');
+}
+
+export interface IActionResetPasswordById {
+    response: {
+        data: {
+            errors?: {
+                default?: string
+                body?: {
+                    senha?: string
+                }
+            }
+        }
+    }
+}
+
+export interface IResetPasswordByIdAction {
+    errors?: {
+        default?: string;
+        body?: {
+            senha?: string
+        }
+    }
+    success?: {
+        default?: string
+    }
+}
+
+export async function resetPasswordById(prevState: any, formData: FormData) {
+
+    try {
+
+        const id = formData.get('id') as string;
+
+        const senha = formData.get('senha') as string;
+
+        console.log(id, senha);
+
+        const create = await Api().patch(`/usuarios/password/${parseInt(id)}`, {
+            senha: senha
+        });
+
+        if (create.status == 204) {
+
+            const response: IResetPasswordByIdAction = {
+                success: {
+                    default: 'Senha resetada com sucesso',
+                }
+            };
+
+            return response;
+
+        }
+
+    } catch (error) {
+
+        if (isAxiosError(error)) {
+
+            const errors = (error as IActionResetPasswordById).response?.data.errors;
+
+            console.log(errors);
+
+            const response: IResetPasswordByIdAction = {
+                errors: {
+                    default: errors?.default,
+                    body: {
+                        senha: errors?.body?.senha
+                    }
+                }
+            };
+
+            return response;
+
+        } else {
+
+            const response: IResetPasswordByIdAction = {
+                errors: {
+                    default: 'Erro desconhecido ao resetar a senha'
+                }
+            };
+
+            // Retorno de um objeto indicando que ocorreu um erro durante a recuperação de senha.
+            return response;
+        }
+    }
+    revalidatePath('/minha-conta');
 }
