@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import Lotties from "../Lotties";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -20,13 +19,6 @@ export const NoPermissionMessage = () => {
                     <h1 className="text-2xl font-bold text-center">
                         Você não tem permissão para acessar esta página.
                     </h1>
-
-                    <Image
-                        src="/ilustrations/lupi-pensativo.png"
-                        alt="Logo"
-                        width={200}
-                        height={200}
-                    />
 
                     <CountdownTimer initialSeconds={10} onComplete={() => redirect(`/`)} />
 

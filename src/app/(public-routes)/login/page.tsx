@@ -104,10 +104,10 @@ export default function LoginPage() {
             />
             <div className="w-1/2 flex justify-center">
                 <Image
-                    src="/logos/logo-kpi-light.png"
+                    src="/logos/logo.png"
                     alt="Logo"
-                    width={611.2}
-                    height={471.5}
+                    width={500}
+                    height={500}
                 />
             </div>
             <div className="w-1/2 flex justify-center">

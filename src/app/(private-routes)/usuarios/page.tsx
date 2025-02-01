@@ -14,8 +14,8 @@ import { MdAdd } from 'react-icons/md';
 
 export async function generateMetadata(): Promise<Metadata> {
     return {
-        title: 'GPL - Gestão de Usuários',
-        description: 'Página de gestão de Usuários da GPL.',
+        title: "AulaPronta IA",
+        description: "Gerador de planos de aula com inteligência artificial",
     };
 };
 

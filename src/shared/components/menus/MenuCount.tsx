@@ -6,7 +6,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MdAccountCircle, MdHelpOutline, MdLogout } from "react-icons/md";
+import { MdAccountCircle, MdLogout } from "react-icons/md";
 import Image from "next/image";
 
 interface IFoto {
@@ -21,11 +21,10 @@ interface IFoto {
 interface IMenuCountProps {
     foto: IFoto;
     aoClicarEmMinhaConta: () => void;
-    aoClicarEmSobre: () => void;
     aoClicarEmSair: () => void;
 }
 
-export const MenuCount = ({ foto, aoClicarEmMinhaConta, aoClicarEmSair, aoClicarEmSobre }: IMenuCountProps) => {
+export const MenuCount = ({ foto, aoClicarEmMinhaConta, aoClicarEmSair }: IMenuCountProps) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -42,13 +41,6 @@ export const MenuCount = ({ foto, aoClicarEmMinhaConta, aoClicarEmSair, aoClicar
                     <DropdownMenuItem className={`justify-center cursor-pointer`} onClick={aoClicarEmMinhaConta}>
                         <MdAccountCircle />
                         Minha Conta
-                    </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuItem className={`justify-center cursor-pointer`} onClick={aoClicarEmSobre}>
-                        <MdHelpOutline />
-                        Sobre
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

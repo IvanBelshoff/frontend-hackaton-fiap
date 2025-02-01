@@ -16,7 +16,7 @@ interface IFoto {
 }
 
 export const Navbar = ({ foto }: { foto: IFoto }) => {
-    
+
     const { data: session } = useSession(); // Obtém a sessão atual
     const { toggleMaximize, isMaximized } = useDrawerContext();
 
@@ -64,8 +64,7 @@ export const Navbar = ({ foto }: { foto: IFoto }) => {
                     <div className='flex-1' />
 
                     <MenuCount
-                        aoClicarEmMinhaConta={() => console.log('Minha Conta')}
-                        aoClicarEmSobre={() => console.log('Sobre')}
+                        aoClicarEmMinhaConta={() => router.push('/minha-conta')}
                         aoClicarEmSair={logout}
                         foto={session?.user?.foto || foto}
                     />
