@@ -359,9 +359,8 @@ export interface IUpdateUsuarioByIdAction {
             sobrenome?: string,
             email?: string,
             bloqueado?: string,
-            localidade?: string,
+            api_key?: string,
             tipo_usuario?: string,
-            codigo_vendedor?: string,
             senha?: string
         }
     }
@@ -381,9 +380,8 @@ export interface IActionUpdateUsuarioById {
                     sobrenome?: string,
                     email?: string,
                     bloqueado?: string,
-                    localidade?: string,
+                    api_key?: string,
                     tipo_usuario?: string,
-                    codigo_vendedor?: string,
                     senha?: string
                 }
             }
@@ -452,9 +450,8 @@ export async function updateUsuarioByIdAction(prevState: any, formData: FormData
                         sobrenome: errors?.body?.sobrenome,
                         email: errors?.body?.email,
                         bloqueado: errors?.body?.bloqueado,
-                        localidade: errors?.body?.localidade,
                         tipo_usuario: errors?.body?.tipo_usuario,
-                        codigo_vendedor: errors?.body?.codigo_vendedor,
+                        api_key: errors?.body?.api_key,
                         senha: errors?.body?.senha
                     }
                 }

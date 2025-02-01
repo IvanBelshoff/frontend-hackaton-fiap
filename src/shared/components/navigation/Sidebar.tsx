@@ -14,14 +14,38 @@ interface IMenuItem {
     icon: JSX.Element;
 }
 
-export const Sidebar = () => {
-    
+interface ISidebarProps {
+    isAdm: boolean;
+}
+export const Sidebar = ({ isAdm }: ISidebarProps) => {
+
     const params = useParams();
     const idUsuario = params.idUsuario;
     const { isMaximized } = useDrawerContext();
     const currentPath = usePathname();
 
-    const menuItems: IMenuItem[] = [
+    const menuItemsProfessor: IMenuItem[] = [
+        {
+            name: 'Página Inicial',
+            href: '/',
+            hrefVariantes: ['/'],
+            icon: <MdHome className={`${currentPath === '/' ? 'text-white' : 'text-black'}`} size={22} />
+        },
+        {
+            name: 'Planos de Aulas',
+            href: '/planos',
+            hrefVariantes: ['/planos'],
+            icon: <MdOutlineArticle className={`${currentPath === '/planos' ? 'text-white' : 'text-black'}`} size={22} />
+        },
+        {
+            name: 'Chat Ia',
+            href: '/chat',
+            hrefVariantes: ['/chat'],
+            icon: <TbMessageChatbot className={`${currentPath === '/chat' ? 'text-white' : 'text-black'}`} size={22} />
+        }
+    ];
+
+    const menuItemsAdm: IMenuItem[] = [
         {
             name: 'Página Inicial',
             href: '/',
@@ -47,6 +71,8 @@ export const Sidebar = () => {
             icon: <MdSupervisorAccount className={`${(currentPath === '/usuarios' || currentPath === '/usuarios/novo' || currentPath === `/usuarios/${idUsuario}/detalhes`) ? 'text-white' : 'text-black'}`} size={22} />
         }
     ];
+    
+    const menuItems = isAdm ? menuItemsAdm : menuItemsProfessor;
 
     const menuAccount: IMenuItem = {
         name: 'Minha Conta',

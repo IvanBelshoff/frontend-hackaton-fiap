@@ -7,6 +7,7 @@ import { Navbar } from "@/shared/components/navigation/Navbar";
 import { Sidebar } from "@/shared/components/navigation/Sidebar";
 import { SideNav } from "@/shared/components/navigation/SideNav";
 import { nextAuthOptions } from "../api/auth/[...nextauth]/route";
+import { TipoUsuario } from "@/shared/interfaces/interface";
 
 type ILayout = Readonly<{ children: React.ReactNode }>;
 
@@ -24,7 +25,7 @@ export default async function Layout({ children }: ILayout) {
         navbar={
           <Navbar foto={session.user.foto} />
         }
-        sidebar={<Sidebar />}
+        sidebar={<Sidebar isAdm={session.user.typeUser == TipoUsuario.ADM ? true : false} />}
       >
         {children}
       </SideNav>

@@ -4,6 +4,7 @@ import { Nunito } from "next/font/google";
 import "./globals.css";
 import { DrawerProvider } from "@/shared/contexts/DrawerContext";
 import NextAuthSessionProvider from "@/providers/sessionProvider";
+import { CountTimerProvider } from "@/shared/contexts/CountTimerContext";
 
 const nunito = Nunito({ subsets: ["latin"] });
 
@@ -18,7 +19,9 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
             <body className={nunito.className}>
                 <NextAuthSessionProvider>
                     <DrawerProvider>
-                        {children}
+                        <CountTimerProvider>
+                            {children}
+                        </CountTimerProvider>
                     </DrawerProvider>
                 </NextAuthSessionProvider>
             </body>

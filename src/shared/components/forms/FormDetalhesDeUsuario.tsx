@@ -5,38 +5,45 @@ interface IFormUsuario {
     tipoUsuario: string;
 }
 
-interface IFormNovoUsuarioProps {
+interface IFormDetalhesDeUsuarioProps {
     nome: string;
     errorNome?: string;
     sobrenome: string;
     errorSobrenome?: string;
     email: string;
     errorEmail?: string;
-    senha: string;
-    apikey: string;
-    errorSenha?: string;
-    errorTipoUsuario?: string;
-    errorApiKey?: string;
+    api_key: string;
+    errorApi_key?: string;
     tipoUsuario: string;
+    errorTipoUsuario?: string;
+    senha: string;
+    errorSenha?: string;
+    idUserSession: string;
+    idUser: string;
+    disabled: boolean;
     aoDigitar: (e: React.ChangeEvent<HTMLInputElement>) => void;
     aoSelecionar: (value: string, name: keyof IFormUsuario) => void
 }
 
-export function FormNovoUsuario({
+export function FormDetalhesDeUsuario({
     nome,
-    sobrenome,
-    email,
-    senha,
     errorNome,
-    errorEmail,
-    errorSenha,
+    sobrenome,
     errorSobrenome,
+    email,
+    errorEmail,
+    tipoUsuario,
     errorTipoUsuario,
-    apikey,
-    errorApiKey,
+    senha,
+    errorSenha,
+    api_key,
+    errorApi_key,
+    idUser,
+    idUserSession,
+    disabled,
     aoDigitar,
     aoSelecionar
-}: IFormNovoUsuarioProps) {
+}: IFormDetalhesDeUsuarioProps) {
 
     return (
         <div className="flex flex-col w-full h-full">
@@ -54,6 +61,7 @@ export function FormNovoUsuario({
                         id="nome"
                         value={nome}
                         onChange={aoDigitar}
+                        disabled={senha !== '' || disabled}
                         name="nome"
                         className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Digite seu nome"
@@ -76,6 +84,7 @@ export function FormNovoUsuario({
                         id="sobrenome"
                         value={sobrenome}
                         onChange={aoDigitar}
+                        disabled={senha !== '' || disabled}
                         name="sobrenome"
                         className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Digite seu sobrenome"
@@ -95,6 +104,7 @@ export function FormNovoUsuario({
                         id="email"
                         value={email}
                         onChange={aoDigitar}
+                        disabled={senha !== '' || disabled}
                         name="email"
                         className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Digite seu email"
@@ -104,25 +114,25 @@ export function FormNovoUsuario({
                     )}
                 </div>
 
-                {/* Localidade */}
                 <div className="flex flex-col gap-2">
                     <label
-                        htmlFor="api_key"
+                        htmlFor="tipoUsuario"
                         className="text-sm font-medium text-gray-700"
                     >
-                        API KEY
+                        Api Key
                     </label>
                     <Input
-                        type="api_key"
+                        type="text"
                         id="api_key"
-                        value={apikey}
+                        value={api_key}
                         onChange={aoDigitar}
+                        disabled={senha !== '' || disabled}
                         name="api_key"
                         className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Digite sua chave de API"
+                        placeholder="Insira a url das métricas"
                     />
-                    {errorEmail && (
-                        <span className="text-error text-sm">{errorApiKey}</span>
+                    {errorApi_key && (
+                        <span className="text-error text-sm">{errorApi_key}</span>
                     )}
                 </div>
 
@@ -134,12 +144,12 @@ export function FormNovoUsuario({
                     >
                         Tipo de Usuário
                     </label>
-                    <Select defaultValue={'professor'} onValueChange={(e) => aoSelecionar(e, 'tipoUsuario')}>
+                    <Select defaultValue={tipoUsuario} disabled={senha !== '' || disabled} onValueChange={(e) => aoSelecionar(e, 'tipoUsuario')}>
                         <SelectTrigger >
                             <SelectValue placeholder="Selecione o tipo de usuário" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectGroup >
+                            <SelectGroup>
                                 <SelectLabel>Tipos</SelectLabel>
                                 <SelectItem value="professor">Professor</SelectItem>
                                 <SelectItem value="administrador">Administrador</SelectItem>
@@ -151,23 +161,35 @@ export function FormNovoUsuario({
                     )}
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="email" className="text-sm font-medium text-gray-700">
-                        Senha
-                    </label>
-                    <Input
-                        type="password"
-                        id="senha"
-                        value={senha}
-                        onChange={aoDigitar}
-                        name="senha"
-                        className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Digite sua senha"
-                    />
-                    {errorSenha && (
-                        <span className="text-error text-sm">{errorSenha}</span>
-                    )}
-                </div>
+                {(idUserSession !== idUser && !disabled) && (
+                    <div className="flex w-full h-auto justify-center items-center border-t flex-col gap-4 pt-3">
+
+                        <div className="flex flex-col w-[50%] gap-2">
+                            <label
+                                htmlFor="senha"
+                                className="text-sm font-medium text-gray-700"
+                            >
+                                Alterar Senha
+                            </label>
+                            <Input
+                                type="password"
+                                id="senha"
+                                name="senha"
+                                defaultValue={senha}
+                                onChange={aoDigitar}
+                                className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Digite sua nova senha"
+                            />
+                        </div>
+
+                        {errorSenha && (
+                            <div className='text-center'>
+                                <span className={`text-error text-sm text-center`}>{errorSenha}</span>
+                            </div>
+                        )}
+
+                    </div>
+                )}
 
             </div>
 
