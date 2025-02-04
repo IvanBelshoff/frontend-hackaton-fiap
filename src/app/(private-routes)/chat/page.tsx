@@ -5,13 +5,19 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { useSession } from 'next-auth/react';
 
 export default function Chat() {
-
+    const { data: session } = useSession();
     const { messages, input, handleInputChange, handleSubmit } = useChat({
         maxSteps: 5,
         api: '/api/chat',
     });
+
+
+    const foto = session?.user.foto;
+
+    console.log(foto);
 
     /*
     Visulizar as ferramentas invocadas
@@ -35,7 +41,7 @@ export default function Chat() {
                                     {m.role === 'user' ? (
                                         <Avatar>
                                             <AvatarFallback>IB</AvatarFallback>
-                                            <AvatarImage src="https://avatars.githubusercontent.com/u/62076023?v=4" />
+                                            <AvatarImage src={foto?.url || 'https://avatars.githubusercontent.com/u/62076023?v=4'} />
                                         </Avatar>
                                     ) : (
                                         <Avatar>

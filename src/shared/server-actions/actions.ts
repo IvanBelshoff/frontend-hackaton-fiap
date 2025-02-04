@@ -681,6 +681,14 @@ export async function newUser(prevState: any, formData: FormData): Promise<ICrea
         const foto = formData.get('foto') as File;
         const senha = formData.get('senha') as string;
 
+        console.log(nome);
+        console.log(sobrenome);
+        console.log(email);
+        console.log(api_key);
+        
+
+        console.log(tipo_usuario);
+
         const formDataUsuario = new FormData();
 
         formDataUsuario.append('nome', nome);
